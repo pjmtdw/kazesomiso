@@ -1,0 +1,33 @@
+# Makefile for Borland C++ Compiler 5.5
+# gdiplus-bcc.lib, giflib-bcc.lib はbcc同梱のimplib.exeを使って作ったものです
+# implib -c -f gdiplus-bcc.lib gdiplus.dll
+# implib -a -c -f giflib-bcc.lib giflib4.dll
+# なぜかdllの遅延ロードオプションである-dが使えなかったので没
+
+BPATH = "C:\borland\bcc55\Bin"
+BCC = $(BPATH)"\bcc32"
+BRC = $(BPATH)"\brc32"
+LINK = $(BPATH)"\ilink32"
+INC = -I"C:/borland/bcc55/Include" -I"C:/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/Include"
+
+LIBPATH = -L"C:\borland\bcc55\Lib" -L"C:\borland\bcc55\PSDK"
+LIBS = import32.lib c0w32.obj cw32.lib giflib-bcc.lib
+
+OBJS = kazesomiso.obj convert_image.obj utils.obj drawfuda.obj fileio.obj \
+       fudaotosi_proc.obj settings_proc.obj fudadesign_proc.obj saveasimage_proc.obj
+
+RESOURCE = kazesomiso.RES
+
+.SUFFIXES: .obj .cpp
+
+kazesomiso.exe: $(OBJS) $(RESOURCE)
+	$(LINK) /Tpe /aa $(LIBPATH) $(OBJS), $@ ,, $(LIBS) ,, $(RESOURCE)
+
+.cpp.obj:
+	$(BCC) -W -w- $(INC) -c $<
+
+kazesomiso.RES: kazesomiso.rc
+	$(BRC) $(INC) $<
+
+clean:
+	rm *.obj *.exe *.RES TMP*.* turboc.*ln *.ilc *.ild *.ilf *.ils *.map *.tds *.tmp

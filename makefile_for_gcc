@@ -1,0 +1,23 @@
+# MinGW - gcc ‚Í GDI+ ‚É‘Î‰‚µ‚Ä‚¢‚È‚¢‚Ì‚ÅA‚±‚Ìmakefile‚Í–v
+GPP = /mingw/bin/g++ -O4
+OPT = -finput-charset=cp932 -fexec-charset=cp932 -mwindows -mno-cygwin
+LIB = -lgif
+
+# “ú–{Œê‘Î‰windres‚ğ‚à‚ç‚Á‚Ä‚­‚é‚±‚Æ
+WINDRES = export CLANG='C-SJIS';/mingw/bin/windres --language=0411
+
+OBJS = kazesomiso.o convert_image.o utils.o drawfuda.o fileio.o \
+       fudaotosi_proc.o settings_proc.o fudadesign_proc.o saveasimage_proc.o
+RESOURCE = resource.o
+
+kazesomiso.exe: $(OBJS) $(RESOURCE)
+	$(GPP) $(OPT) -o $@ $(OBJS) $(RESOURCE) $(LIB)
+
+.cc.o:
+	$(GPP) $(OPT) -c $<
+
+resource.o: kazesomiso.rc
+	$(WINDRES) -o $@ $<
+
+clean:
+	rm *.o *.exe
